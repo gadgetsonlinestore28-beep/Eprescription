@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hashan28 - Prescription Software</title>
+<style>
+*{box-sizing:border-box;font-family:Hind Siliguri,Arial,sans-serif}body{margin:0;background:#eef2f7;padding:0}
+.top{background:#0d6efd;color:#fff;padding:14px;text-align:center}.top h1{margin:0;font-size:22px}
+.box{max-width:950px;margin:14px auto;background:#fff;padding:18px;border-radius:12px;box-shadow:0 2px 10px #0001}
+input,select,textarea{width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px;font-size:15px}
+button{background:#0d6efd;color:#fff;border:0;padding:13px;border-radius:8px;font-weight:bold;cursor:pointer;width:100%;margin-top:8px;font-size:15px}
+button.green{background:#198754}button.orange{background:#ff9800;color:#000}button.red{background:#dc3545}button.grey{background:#6c757d}
+.flex{display:flex;gap:8px}.flex>*{flex:1}.hidden{display:none}
+.med-row{display:flex;gap:5px;margin-bottom:5px}.med-row input{flex:1}
+.chip{display:inline-block;background:#e7f0ff;padding:7px 12px;border-radius:20px;margin:3px;cursor:pointer;font-size:13px;border:1px solid #cfe0ff}
+#printArea{display:none}
+@media print{body *{visibility:hidden}#printArea,#printArea *{visibility:visible}#printArea{display:block!important;position:absolute;left:0;top:0;width:100%;padding:0;margin:0}.no-print{display:none!important}}
+.pad{border:1.5px solid #222;padding:12px 16px;margin-bottom:8px;position:relative;background:#fff}
+.pad-head{text-align:center;border-bottom:2px solid #0d6efd;padding-bottom:6px}
+.pad-head h2{margin:0;color:#0d6efd;font-size:22px}.pad-head p{margin:1px;font-size:12px}
+.copy-tag{position:absolute;right:10px;top:10px;background:#0d6efd;color:#fff;font-size:11px;padding:3px 8px;border-radius:20px}
+.cut{border-top:2px dashed #000;text-align:center;font-size:12px;margin:8px 0;padding:5px}
+table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:6px;font-size:13px;text-align:left}
+</style>
+</head>
+<body>
+<div class="top no-print"><h1>www.hashan28.com</h1><p style="margin:0">Prescription Software - Firebase</p></div>
+
+<div class="box no-print" id="authBox">
+<h2>ডাক্তার লগইন / রেজিস্ট্রেশন</h2>
+<input id="dEmail" placeholder="Email">
+<input id="dPass" type="password" placeholder="Password">
+<input id="dName" placeholder="ডাক্তারের নাম - ডাঃ হাসান">
+<input id="dDegree" placeholder="ডিগ্রি - MBBS">
+<input id="dBmdc" placeholder="BMDC নম্বর">
+<input id="dChamber" placeholder="চেম্বার ঠিকানা">
+<input id="dMobile" placeholder="মোবাইল">
+<input id="dFee" placeholder="ভিজিট ফি - 500">
+<div class="flex"><button onclick="register()">নতুন অ্যাকাউন্ট</button><button class="green" onclick="login()">লগইন</button></div>
+</div>
+
+<div class="box no-print hidden" id="dashBox">
+<h2 id="welcome"></h2><p id="docInfo"></p>
+<div class="flex"><button class="grey" onclick="showStats()">রিপোর্ট</button><button class="red" onclick="logout()">লগআউট</button></div>
+<div id="stats"></div><hr>
+<h3>নতুন প্রেসক্রিপশন</h3>
+<div class="flex"><input id="pName" placeholder="রোগীর নাম *"><input id="pAge" placeholder="বয়স"><select id="pGender"><option>পুরুষ</option><option>মহিলা</option><option>শিশু</option></select></div>
+<div class="flex"><input id="pMobile" placeholder="মোবাইল নম্বর"><input id="pWeight" placeholder="ওজন"><input id="pBP" placeholder="BP"></div>
+<input id="pAddress" placeholder="ঠিকানা">
+<textarea id="pProblem" placeholder="রোগীর সমস্যা"></textarea>
+<h4>🧪 Investigation / টেস্ট</h4>
+<span class="chip" onclick="addTest('CBC')">CBC</span><span class="chip" onclick="addTest('Urine R/E')">Urine R/E</span><span class="chip" onclick="addTest('Blood Sugar')">Blood Sugar</span><span class="chip" onclick="addTest('X-Ray Chest')">X-Ray Chest</span><span class="chip" onclick="addTest('ECG')">ECG</span><span class="chip" onclick="addTest('Ultrasound')">Ultrasound</span>
+<textarea id="pTest" placeholder="টেস্ট এখানে আসবে"></textarea>
+<h4>💊 ওষুধ (Rx)</h4><div id="medList"></div><button class="grey" onclick="addMed()">+ ওষুধ যোগ করুন</button>
+<h4>উপদেশ</h4>
+<span class="chip" onclick="addAdvice('প্রচুর পানি খাবেন')">প্রচুর পানি খাবেন</span><span class="chip" onclick="addAdvice('৭ দিন পর আবার আসবেন')">৭ দিন পর আসবেন</span>
+<textarea id="pAdvice" placeholder="উপদেশ"></textarea>
+<input id="pFollow" type="date">
+<button class="orange" onclick="printStep1()">🧪 ১ম বার - শুধু Investigation প্রিন্ট (২ কপি)</button>
+<button class="green" onclick="printStep2()">💊 ২য় বার - Investigation + ওষুধ একসাথে প্রিন্ট (২ কপি)</button>
+<hr><h3>পুরনো রোগী খুঁজুন</h3><input id="searchMobile" placeholder="মোবাইল দিয়ে খুঁজুন"><button onclick="searchPatient()">খুঁজুন</button><div id="searchResult"></div>
+</div>
+
+<div id="printArea"><div id="copy1"></div><div class="cut">✂️ - - - কেটে নিন / CUT HERE - - - ✂️</div><div id="copy2"></div></div>
+<div class="box no-print hidden" id="printBtnBox"><button onclick="window.print()">🖨️ প্রিন্ট করুন</button><button class="green" onclick="backDash()">নতুন প্রেসক্রিপশন</button></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {getFirestore,collection,addDoc,query,where,getDocs} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ▼▼▼ এখানে আপনার Firebase Config বসান ▼▼▼
+const firebaseConfig={apiKey:"YOUR_API_KEY",authDomain:"hashan28.firebaseapp.com",projectId:"hashan28",storageBucket:"hashan28.appspot.com",messagingSenderId:"YOUR_SENDER_ID",appId:"YOUR_APP_ID"};
+const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
+let currentDoctor=null;
+window.addMed=()=>{let d=document.createElement('div');d.className='med-row';d.innerHTML=`<input placeholder="ওষুধের নাম" class="mName"><input placeholder="ডোজ 1+0+1" class="mDose"><input placeholder="দিন" class="mDay"><input
